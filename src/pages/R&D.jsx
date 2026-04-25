@@ -19,6 +19,8 @@ const RnD = () => {
   const [status, setStatus] = useState('IDLE');
   const [sessionId, setSessionId] = useState(null);
   const [energy, setEnergy] = useState(0);
+  const [powerFactor, setPowerFactor] = useState(0);
+  const [batteryPercentage, setBatteryPercentage] = useState(0);
 
   const [popup, setPopup] = useState({
     show: false,
@@ -40,7 +42,7 @@ const RnD = () => {
 
       setSessionId(sessionData.id);
       setStatus(sessionData.status);
-      setEnergy(sessionData.total_wh);
+      setEnergy(sessionData.energy);
 
       setPopup({
         show: true,
@@ -177,7 +179,7 @@ const RnD = () => {
       try {
         const data = await getSessionById(sessionId);
 
-        setEnergy(data.total_wh);
+        setEnergy(data.energy);
         setStatus(data.status);
 
         setPassedMessage({
@@ -220,7 +222,7 @@ const RnD = () => {
   // =========================
   return (
     <div className="flex justify-center">
-      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-6xl">
+      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-7xl">
 
         {/* Popup */}
         {popup.show && (
@@ -234,14 +236,16 @@ const RnD = () => {
         )}
 
         {/* Table */}
-        <table className="w-full border border-gray-300 text-sm text-center">
+        <table className="w-full table-fixed border border-gray-300 text-sm text-center">
 
           <thead className="bg-indigo-600 text-white">
             <tr>
               <th className="p-2 border">Start Time</th>
               <th className="p-2 border">End Time</th>
               <th className="p-2 border">Select</th>
-              <th className="p-2 border">Energy</th>
+              <th className="p-2 border">Energy (Kwh)</th>
+              <th className='p-2 border'>Power Factor</th>
+              <th className="p-2 border">Battery</th>
               <th className="p-2 border">Status</th>
               <th className="p-2 border">Action</th>
             </tr>
@@ -280,20 +284,25 @@ const RnD = () => {
                   className="p-1 border rounded"
                 >
                   <option value="">Select</option>
-                  <option value="Part One">Aeration One</option>
-                  <option value="Part Two">Aeration Two</option>
+                  <option value="Part One">BFL_PomonA001</option>
+                  <option value="Part Two">BFL_PomonA002</option>
                 </select>
               </td>
 
               {/* Energy */}
               <td className="p-2 border">
-                <input
-                  type="text"
-                  value={energy}
-                  className="text-center"
-                />
+                <span className="block w-full text-center">{energy}</span>
               </td>
 
+              {/* Power Factor */}
+              <td className="p-2 border">
+                <span className="block w-full text-center">{powerFactor}</span>
+              </td>
+
+              {/* Battery */}
+              <td className="p-2 border">
+                <span className="block w-full text-center">{batteryPercentage}</span>
+              </td>
               {/* Status */}
               <td className="p-2 border">
                 <span
@@ -324,7 +333,24 @@ const RnD = () => {
                   >
                     Abort
                   </button>
-                ) : (
+                ) : status === "Error" ||  status === "FAILED" || status === "COMPLETED" || status === "ABORTED" ?(
+                  <button
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 cursor-pointer"
+                  onClick={() => {
+                    setStartTime('');
+                    setEndTime('');
+                    setSelectedPart('Part One');
+                    setStatus("IDLE");
+                    setResult('')
+                    setSessionId(null);
+                    setEnergy(0);
+                    setPowerFactor(0);
+                    setBatteryPercentage(0);
+                  }}
+                  >
+                    Clear
+                  </button>
+                ):(
                   <button
                     onClick={calculateTimeDifference}
                     className="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700 cursor-pointer"

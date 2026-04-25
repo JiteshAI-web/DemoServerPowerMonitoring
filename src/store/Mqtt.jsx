@@ -113,7 +113,8 @@ export const MqttProvider = ({ children }) => {
 
       // Inside MQTT message handler:
       if (topic === "pomon/BFL_PomonA001/heartbeat") {
-        const message = messageStr.trim();
+        const message = messageStr.trim().toUpperCase();
+        console.log("Heartbeat received:", message); 
         if (message === "ALIVE") {
           setReceivedWifiStatus(Date.now());
         }

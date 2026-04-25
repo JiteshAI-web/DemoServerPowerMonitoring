@@ -161,12 +161,24 @@ const LineCharts = () => {
 
   return (
     <>
-      <button
+     <div className='flex justify-between'>
+      <h2 className="text-lg font-medium text-gray-800 mb-3">
+                    Device Analytics
+                </h2>
+      {/* <button
         onClick={handleReset}
         className="absolute md:top-5.5 top-48 right-1 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded-xl md:me-12 me-4 shadow-md transition duration-300 ease-in-out"
       >
         Reset
+      </button> */}
+
+      <button
+        onClick={handleReset}
+        className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded-xl md:me-4 me-4 shadow-md transition duration-300 ease-in-out w-20 h-8 cursor-pointer"
+      >
+        Reset
       </button>
+     </div>
 
       <div className="flex flex-col md:flex-row gap-6 p-3 h-fit">
         {/* Dev1 */}

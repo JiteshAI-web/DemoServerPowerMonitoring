@@ -14,7 +14,7 @@ const TopBar = ({ wifiStatus, handleLogout }) => {
 
       <button
         onClick={handleLogout}
-        className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-lg text-sm font-medium shadow"
+        className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-lg text-sm font-medium shadow cursor-pointer"
       >
         Logout
       </button>

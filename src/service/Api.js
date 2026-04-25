@@ -1,12 +1,24 @@
 import axios from "axios";
 
-
-const apiUrl = import.meta.env.VITE_API_URL;
 const getToken = () => {
     const storedData = localStorage.getItem("loggedData");
     const userData = storedData ? JSON.parse(storedData) : null;
     return userData?.token;
 }
+
+//Login Api
+const apiUrl = import.meta.env.VITE_API_URL;
+export const loginUser = async (data) => {
+    try {
+        const response = await axios.post(`${apiUrl}/api/login/`, data);
+        return response.data;
+    }
+    catch(error) {
+        throw error.response?.data || error.message;
+    }
+}
+
+
 export const createSession = async (data) => {
     try {
         const token = getToken();
@@ -25,6 +37,7 @@ export const createSession = async (data) => {
     }
 
 }
+
 
 export const getSessionById = async (id) => {
     try {

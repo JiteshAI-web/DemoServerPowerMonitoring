@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useMqtt } from '../store/Mqtt';
+import {loginUser} from '../service/Api'
 
 const LogIn = () => {
   const [loginData, setLoginData] = useState({
@@ -10,6 +10,7 @@ const LogIn = () => {
   });
 
   const apiUrl = import.meta.env.VITE_API_URL;
+  console.log(apiUrl)
   const navigate = useNavigate();
   const { storeDataInLS } = useMqtt();
 
@@ -20,31 +21,54 @@ const LogIn = () => {
     });
   };
 
+//   const handleForm = async (e) => {
+//     e.preventDefault();
+//     console.log("Sending:", {
+//     username: loginData.username,
+//     password: loginData.password
+//   });
+//     try {
+//       const response = await axios.post(`${apiUrl}/api/login/`, {
+//   username: loginData.username.trim(),
+//   password: loginData.password.trim()
+// });
+
+//       if (response.status === 200) {
+//         storeDataInLS(response.data);
+//         setLoginData({
+//           username: "",
+//           password: ""
+//         });
+//         navigate('/powermonitoringdashboard', { replace: true });
+//       }
+//     } catch (error) {
+//     console.log("Backend Response:", error.response?.data);
+//     console.error('Login failed:', error);
+//   }
+//   };
+
   const handleForm = async (e) => {
     e.preventDefault();
-    console.log("Sending:", {
-    username: loginData.username,
-    password: loginData.password
-  });
     try {
-      const response = await axios.post(`${apiUrl}/api/login/`, {
-  username: loginData.username.trim(),
-  password: loginData.password.trim()
-});
+      const data = await loginUser({
+        username: loginData.username.trim(),
+        password: loginData.password.trim()
+      })
+      console.log(data);
+      //store data
+      storeDataInLS(data);
+      //reset form
+      setLoginData({
+        username: '',
+        password: ''
+      })
+      navigate('/powermonitoringdashboard', { replace: true });
+    } catch(error) {
+      console.log("Backend Response:", error);
+      console.error("Login Failed:", error);
 
-      if (response.status === 200) {
-        storeDataInLS(response.data);
-        setLoginData({
-          username: "",
-          password: ""
-        });
-        navigate('/powermonitoringdashboard', { replace: true });
-      }
-    } catch (error) {
-    console.log("Backend Response:", error.response?.data);
-    console.error('Login failed:', error);
+    }
   }
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">

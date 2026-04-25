@@ -8,9 +8,9 @@ export default function DashboardContent() {
                 <RnD />
             </div>
             <div className="bg-white rounded-lg shadow-sm w-full p-4 border">
-                <h2 className="text-lg font-medium text-gray-800 mb-3">
+                {/* <h2 className="text-lg font-medium text-gray-800 mb-3">
                     Device Analytics
-                </h2>
+                </h2> */}
                 <Chart/>
             </div>
         </div>
