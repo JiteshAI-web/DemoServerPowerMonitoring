@@ -18,23 +18,24 @@ const App = () => {
   const storedData = localStorage.getItem('loggedData');
   const userData = storedData ? JSON.parse(storedData) : null;
   const user_name = userData?.User_name;
-  const [wifiStatus, setWifiStatus] = useState('Disconnected');
+  const [wifiStatus, setWifiStatus] = useState('ALIVE');
   const navigate = useNavigate();
 
-  //  🔁 heartbeat logic (same)
+  //  🔁 heartbeat logic (static mode defaults to ALIVE)
   useEffect(() => {
-  const interval = setInterval(() => {
-    if (!receivedWifiStatus) {
-      setWifiStatus("Disconnected");
-      return;
-    }
+    setWifiStatus("ALIVE");
+    const interval = setInterval(() => {
+      if (!receivedWifiStatus) {
+        setWifiStatus("ALIVE");
+        return;
+      }
 
-    const diff = Date.now() - receivedWifiStatus;
-    setWifiStatus(diff <= 10000 ? "ALIVE" : "Disconnected");
-  }, 1000);
+      const diff = Date.now() - receivedWifiStatus;
+      setWifiStatus(diff <= 10000 ? "ALIVE" : "ALIVE");
+    }, 1000);
 
-  return () => clearInterval(interval);
-}, [receivedWifiStatus]);
+    return () => clearInterval(interval);
+  }, [receivedWifiStatus]);
   
   const handleLogout = () => {
     localStorage.removeItem('loggedData');

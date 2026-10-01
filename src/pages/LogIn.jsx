@@ -1,51 +1,25 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMqtt } from '../store/Mqtt';
-import {loginUser} from '../service/Api'
+import { loginUser } from '../service/Api';
 
 const LogIn = () => {
   const [loginData, setLoginData] = useState({
-    username: '',
-    password: ''
+    username: 'bariflolabs.deploy@gmail.com',
+    password: 'Bariflo2026'
   });
+  const [error, setError] = useState('');
 
-  const apiUrl = import.meta.env.VITE_API_URL;
-  console.log(apiUrl)
   const navigate = useNavigate();
   const { storeDataInLS } = useMqtt();
 
   const handleChange = (e) => {
+    setError('');
     setLoginData({
       ...loginData,
       [e.target.name]: e.target.value
     });
   };
-
-//   const handleForm = async (e) => {
-//     e.preventDefault();
-//     console.log("Sending:", {
-//     username: loginData.username,
-//     password: loginData.password
-//   });
-//     try {
-//       const response = await axios.post(`${apiUrl}/api/login/`, {
-//   username: loginData.username.trim(),
-//   password: loginData.password.trim()
-// });
-
-//       if (response.status === 200) {
-//         storeDataInLS(response.data);
-//         setLoginData({
-//           username: "",
-//           password: ""
-//         });
-//         navigate('/powermonitoringdashboard', { replace: true });
-//       }
-//     } catch (error) {
-//     console.log("Backend Response:", error.response?.data);
-//     console.error('Login failed:', error);
-//   }
-//   };
 
   const handleForm = async (e) => {
     e.preventDefault();
@@ -53,22 +27,18 @@ const LogIn = () => {
       const data = await loginUser({
         username: loginData.username.trim(),
         password: loginData.password.trim()
-      })
-      console.log(data);
-      //store data
+      });
       storeDataInLS(data);
-      //reset form
       setLoginData({
         username: '',
         password: ''
-      })
+      });
       navigate('/powermonitoringdashboard', { replace: true });
-    } catch(error) {
-      console.log("Backend Response:", error);
-      console.error("Login Failed:", error);
-
+    } catch (err) {
+      console.error("Login Failed:", err);
+      setError(err?.message || "Login failed. Please check credentials.");
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -76,6 +46,12 @@ const LogIn = () => {
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
           Login to Power Monitoring
         </h2>
+
+        {error && (
+          <div className="mb-4 p-2 bg-red-100 border border-red-400 text-red-700 text-sm rounded text-center">
+            {error}
+          </div>
+        )}
 
         <form className="space-y-4" onSubmit={handleForm}>
           <div>
@@ -110,7 +86,7 @@ const LogIn = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition cursor-pointer"
           >
             Sign In
           </button>
